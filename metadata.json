@@ -1,0 +1,7 @@
+{
+  "name": "Iron Pulse Fitness Club",
+  "description": "Premium high-performance gym website with dark luxury theme and high-conversion features.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
