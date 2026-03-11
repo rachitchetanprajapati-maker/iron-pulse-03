@@ -21,7 +21,7 @@ import {
 
 // --- Components ---
 
-const Navbar = () => {
+const Navbar = ({ gymName }: { gymName: string }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -39,6 +39,10 @@ const Navbar = () => {
     { name: 'Contact', href: '#contact' },
   ];
 
+  const nameParts = gymName.trim().split(' ');
+  const firstName = nameParts[0];
+  const restName = nameParts.slice(1).join(' ');
+
   return (
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'bg-black/60 backdrop-blur-2xl py-4 border-b border-white/10' : 'bg-black/20 backdrop-blur-md py-6'}`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
@@ -47,7 +51,7 @@ const Navbar = () => {
             <Dumbbell className="text-white -rotate-45" size={24} />
           </div>
           <span className="font-display text-2xl tracking-tighter uppercase font-black">
-            Iron<span className="text-accent">Pulse</span>
+            {firstName}<span className="text-accent">{restName ? ` ${restName}` : ''}</span>
           </span>
         </div>
 
@@ -238,9 +242,16 @@ const TestimonialCard = ({ name, text, rating }) => (
 // --- Main App ---
 
 export default function App() {
+  // Read URL parameters for personalization
+  const params = new URLSearchParams(window.location.search);
+  const gymName = params.get('gym') || 'Iron Pulse Fitness';
+  const gymArea = params.get('area') || 'Jagatpura, Jaipur';
+  const gymPhone = params.get('phone') || '9876543210';
+  const whatsappLink = `https://wa.me/91${gymPhone}`;
+
   return (
     <div className="overflow-x-hidden selection:bg-accent selection:text-white">
-      <Navbar />
+      <Navbar gymName={gymName} />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-24 md:pt-32 overflow-hidden">
@@ -273,7 +284,7 @@ export default function App() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-white/60 text-lg md:text-xl max-w-xl mb-12 leading-relaxed"
             >
-              Experience Jaipur's most elite fitness destination. World-class equipment, 
+              Experience {gymArea}'s most elite fitness destination. World-class equipment, 
               expert coaching, and a community built for results.
             </motion.p>
 
@@ -299,7 +310,7 @@ export default function App() {
             >
               <StatCard icon={Users} value="850+" label="Active Members" />
               <StatCard icon={Star} value="4.8" label="Google Rating" />
-              <StatCard icon={MapPin} value="Jaipur" label="Location" />
+              <StatCard icon={MapPin} value={gymArea.split(',')[0]} label="Location" />
             </motion.div>
           </div>
         </div>
@@ -331,9 +342,9 @@ export default function App() {
 
             <div>
               <SectionHeading 
-                subtitle="About Iron Pulse"
-                title="Welcome to Iron Pulse Fitness"
-                description="Iron Pulse Fitness Club is one of Jaipur’s most trusted and high-performance gyms designed for people who want real fitness results. Our facility combines world-class equipment, certified trainers, and a motivating environment to help you reach your fitness goals faster."
+                subtitle={`About ${gymName}`}
+                title={`Welcome to ${gymName}`}
+                description={`${gymName} is one of Jaipur's most trusted and high-performance gyms designed for people who want real fitness results. Our facility combines world-class equipment, certified trainers, and a motivating environment to help you reach your fitness goals faster.`}
               />
               
               <div className="grid grid-cols-2 gap-8 mt-12">
@@ -562,7 +573,7 @@ export default function App() {
             <TestimonialCard 
               name="Amit Jain" 
               rating={5}
-              text="Joining Iron Pulse was the best decision for my health. The community here is incredible and pushes you to be better."
+              text="Joining was the best decision for my health. The community here is incredible and pushes you to be better."
             />
           </div>
         </div>
@@ -684,10 +695,10 @@ export default function App() {
                     <MapPin size={28} />
                   </div>
                   <div>
-                    <h4 className="text-xl font-display uppercase font-bold mb-2">Iron Pulse Fitness Club</h4>
+                    <h4 className="text-xl font-display uppercase font-bold mb-2">{gymName}</h4>
                     <p className="text-white/60 leading-relaxed">
-                      Near SKIT College, Jagatpura,<br />
-                      Jaipur, Rajasthan 302017
+                      {gymArea},<br />
+                      Rajasthan
                     </p>
                   </div>
                 </div>
@@ -731,11 +742,11 @@ export default function App() {
                   <Dumbbell className="text-white -rotate-45" size={24} />
                 </div>
                 <span className="font-display text-2xl tracking-tighter uppercase font-black">
-                  Iron<span className="text-accent">Pulse</span>
+                  {gymName.split(' ')[0]}<span className="text-accent">{gymName.split(' ').slice(1).join(' ') ? ` ${gymName.split(' ').slice(1).join(' ')}` : ''}</span>
                 </span>
               </div>
               <p className="text-white/50 leading-relaxed mb-8">
-                Elevate your fitness journey at Jaipur's premier high-performance gym. 
+                Elevate your fitness journey at {gymArea}'s premier high-performance gym. 
                 Strength, community, and results.
               </p>
               <div className="flex gap-4">
@@ -764,16 +775,16 @@ export default function App() {
               <ul className="space-y-6">
                 <li className="flex items-center gap-4">
                   <Phone size={18} className="text-accent" />
-                  <span className="text-white/50 text-sm font-medium">+91 98765 43210</span>
+                  <span className="text-white/50 text-sm font-medium">+91 {gymPhone}</span>
                 </li>
                 <li className="flex items-center gap-4">
                   <Mail size={18} className="text-accent" />
-                  <span className="text-white/50 text-sm font-medium">info@ironpulsefitness.com</span>
+                  <span className="text-white/50 text-sm font-medium">info@{gymName.toLowerCase().replace(/\s+/g, '')}.com</span>
                 </li>
                 <li className="flex items-start gap-4">
                   <MapPin size={18} className="text-accent mt-1" />
                   <span className="text-white/50 text-sm font-medium leading-relaxed">
-                    Jagatpura, Jaipur,<br />Rajasthan 302017
+                    {gymArea},<br />Rajasthan
                   </span>
                 </li>
               </ul>
@@ -793,7 +804,7 @@ export default function App() {
 
           <div className="pt-10 border-t border-white/5 flex flex-col md:row justify-between items-center gap-6">
             <p className="text-white/30 text-xs uppercase tracking-widest font-bold">
-              © 2026 Iron Pulse Fitness Club. All Rights Reserved.
+              © 2026 {gymName}. All Rights Reserved.
             </p>
             <div className="flex gap-8">
               <a href="#" className="text-white/30 hover:text-white text-xs uppercase tracking-widest font-bold">Privacy Policy</a>
@@ -805,7 +816,7 @@ export default function App() {
 
       {/* Floating WhatsApp Button */}
       <a 
-        href="https://wa.me/919876543210" 
+        href={whatsappLink}
         target="_blank" 
         rel="noopener noreferrer"
         className="fixed bottom-8 right-8 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center"
